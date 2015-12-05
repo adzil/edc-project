@@ -1,0 +1,10 @@
+# Ignore everything
+*
+
+# Except the verilog files, of course
+!src/
+src/*
+!src/*.v
+
+# And some static files
+!.gitignore
