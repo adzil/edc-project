@@ -5,7 +5,8 @@
 
 `timescale 1ns/100ps
 
-module input_buff(din, cntin, clk, rst, ena, dout0, dout1, dout2, dout3);
+module input_buff(  din, cntin, clk, rst, ena,
+                    doutRef, doutSigA, doutSigB, doutSigC);
     parameter NDATA = 128;
     localparam NDATA_LOG = $clog2(NDATA);
 
@@ -16,45 +17,45 @@ module input_buff(din, cntin, clk, rst, ena, dout0, dout1, dout2, dout3);
     input rst;
     input ena;
 
-    output [NDATA-1:0] dout0;
-    output [NDATA-1:0] dout1;
-    output [NDATA-1:0] dout2;
-    output [NDATA-1:0] dout3;
+    output [NDATA-1:0] doutRef;
+    output [NDATA-1:0] doutSigA;
+    output [NDATA-1:0] doutSigB;
+    output [NDATA-1:0] doutSigC;
 
-    serial_buff #(1'd1, NDATA) serialBuffInst0 (
+    serial_buff #(1'd1, NDATA) serialBuffInstA (
         .din (din[0]),
         .cntin (cntin),
         .clk (clk),
         .rst (rst),
         .ena (ena),
-        .dout (dout0)
+        .dout (doutRef)
     );
 
-    serial_buff #(1'd0, NDATA) serialBuffInst1 (
+    serial_buff #(1'd0, NDATA) serialBuffInstB (
         .din (din[1]),
         .cntin (cntin),
         .clk (clk),
         .rst (rst),
         .ena (ena),
-        .dout (dout1)
+        .dout (doutSigA)
     );
 
-    serial_buff #(1'd0, NDATA) serialBuffInst2 (
+    serial_buff #(1'd0, NDATA) serialBuffInstC (
         .din (din[2]),
         .cntin (cntin),
         .clk (clk),
         .rst (rst),
         .ena (ena),
-        .dout (dout2)
+        .dout (doutSigB)
     );
 
-    serial_buff #(1'd0, NDATA) serialBuffInst3 (
+    serial_buff #(1'd0, NDATA) serialBuffInstD (
         .din (din[3]),
         .cntin (cntin),
         .clk (clk),
         .rst (rst),
         .ena (ena),
-        .dout (dout3)
+        .dout (doutSigC)
     );
 
 endmodule

@@ -15,7 +15,7 @@ module serial_buff(din, cntin, clk, rst, ena, dout);
     input rst;
     input ena;
     // Output data line
-    output reg [NDATA-1:0] dout;
+    output reg [NDATA-1:0] dout = {NDATA{1'd0}};
 
     /* Wire/register declaration */
     wire [NDATA-1:0] buffer;
@@ -32,12 +32,12 @@ module serial_buff(din, cntin, clk, rst, ena, dout);
 
     always @ (posedge clk or negedge rst) begin
         if (!rst)
-            dout <= 'd0;
+            dout <= {NDATA{1'd0}};
         else begin
             if (!ena) begin
-                if (cntin == 'd0)
+                if (cntin == {NDATA{1'd0}})
                     dout <= buffer;
-                else if (!MOVIN && cntin[1:0] == 'd0) begin
+                else if (!MOVIN && cntin[1:0] == 2'd0) begin
                     dout[NDATA-1:4] <= dout[NDATA-5:0];
                     dout[3:0] <= dout[NDATA-1:NDATA-4];
                 end

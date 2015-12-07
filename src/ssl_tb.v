@@ -1,6 +1,6 @@
 `timescale 1ns/100ps
 
-module input_buff_tb;
+module ssl_tb;
     /* Parameter declaration */
     parameter NDATA = 128;
     localparam NDATA_LOG = $clog2(NDATA);
@@ -19,31 +19,10 @@ module input_buff_tb;
     wire [NDATA-1:0] doutSigB;
     wire [NDATA-1:0] doutSigC;
 
-    counter cnt (
-        .clk (clk),
-        .rst (rst),
-        .ena (ena),
-        .dout (cntin)
-    );
-
-    input_buff dut (
-        .din (din),
-        .cntin (cntin),
-        .clk (clk),
-        .rst (rst),
-        .ena (ena),
-        .doutA (doutRef),
-        .doutB (doutSigA),
-        .doutC (doutSigB),
-        .doutD (doutSigC)
-    );
-
     initial begin
         clk <= 1'd1;
-        ena <= 1'd1;
         rst <= 1'd0;
-        #3
-        #100
+
         rst <= 1'd1;
         #20
         ena <= 1'd0;

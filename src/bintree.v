@@ -38,7 +38,7 @@ module bintree(din, dout);
         end
 
         // Wire output to the last data wire
-        assign dout = bAdd[i-1].data[0] + bAdd[i-1].data[1];
+        assign dout = bAdd[NDATA_LOG-1].data[0] + bAdd[NDATA_LOG-1].data[1];
     endgenerate
     
 endmodule
