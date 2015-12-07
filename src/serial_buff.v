@@ -35,7 +35,7 @@ module serial_buff(din, cntin, clk, rst, ena, dout);
             dout <= {NDATA{1'd0}};
         else begin
             if (!ena) begin
-                if (cntin == {NDATA{1'd0}})
+                if (cntin == {(NDATA_LOG){1'd0}})
                     dout <= buffer;
                 else if (!MOVIN && cntin[1:0] == 2'd0) begin
                     dout[NDATA-1:4] <= dout[NDATA-5:0];

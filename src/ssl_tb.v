@@ -8,25 +8,31 @@ module ssl_tb;
     /* Input/output declaration */
     // Input data line
     reg [3:0] din;
-    wire [NDATA_LOG-1:0] cntin;
     // Control line
     reg clk;
-    reg rst;
-    reg ena;
+    reg erst;
+
+    reg [9:0] rndval;
     // Output data line
-    wire [NDATA-1:0] doutRef;
-    wire [NDATA-1:0] doutSigA;
-    wire [NDATA-1:0] doutSigB;
-    wire [NDATA-1:0] doutSigC;
+    wire [NDATA_LOG-1:0] dIdA;
+    wire [NDATA_LOG-1:0] dIdB;
+    wire [NDATA_LOG-1:0] dIdC;
+
+    ssl dut (
+        .clk (clk),
+        .erst (erst),
+        .din (din),
+        .dIdA (dIdA),
+        .dIdB (dIdB),
+        .dIdC (dIdC)
+    );
 
     initial begin
         clk <= 1'd1;
-        rst <= 1'd0;
-
-        rst <= 1'd1;
+        erst <= 1'd0;
         #20
-        ena <= 1'd0;
-        #5130
+        erst <= 1'd1;
+        #50000
         $stop();
     end
 
@@ -35,14 +41,20 @@ module ssl_tb;
         if (!isloop)
             #3
             isloop <= 1;
-        else
-            #20
-            din <= $random();
+        else begin
+            #25
+            rndval[9:1] <= rndval[8:0];
+            rndval[0] <= $random();
+            din[0] <= rndval[0];
+            din[1] <= rndval[9];
+            din[2] <= rndval[6];
+            din[3] <= rndval[3];
+        end
     end
 
     // Clock generation
     always begin
-        #10
+        #25
         clk <= ~clk;
     end
 
