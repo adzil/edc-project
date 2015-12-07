@@ -12,7 +12,7 @@ module ssl_tb;
     reg clk;
     reg erst;
 
-    reg [9:0] rndval;
+    reg [9:0] rndval = 10'd0;
     // Output data line
     wire [NDATA_LOG-1:0] dIdA;
     wire [NDATA_LOG-1:0] dIdB;
@@ -42,7 +42,7 @@ module ssl_tb;
             #3
             isloop <= 1;
         else begin
-            #25
+            #20
             rndval[9:1] <= rndval[8:0];
             rndval[0] <= $random();
             din[0] <= rndval[0];
@@ -54,7 +54,7 @@ module ssl_tb;
 
     // Clock generation
     always begin
-        #25
+        #10
         clk <= ~clk;
     end
 

@@ -11,16 +11,16 @@ module counter(clk, rst, ena, dout);
     input rst;
     input ena;
     // Output data line
-    output reg [NDATA_LOG-1:0] dout;
+    output reg [NDATA_LOG-1:0] dout = {(NDATA_LOG-2){1'd0}};
 
     /* Sequential processes */
     // Set counter advancement
     always @ (posedge clk or negedge rst) begin
         if (!rst)
-            dout <= 'd0;
+            dout <= {(NDATA_LOG-2){1'd0}};
         else
             if (!ena)
-                dout <= dout + 'd1;
+                dout <= dout + {{(NDATA_LOG-1){1'd0}},{1'd1}};
             else
                 dout <= dout;
     end
