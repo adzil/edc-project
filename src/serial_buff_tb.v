@@ -3,11 +3,12 @@
 module serial_buff_tb;
     /* Parameter declaration */
     parameter NDATA = 128;
+    localparam NDATA_LOG = $clog2(NDATA);
 
     /* Input/output declaration */
     // Input data line
     reg din;
-    reg cntin;
+    wire [NDATA_LOG-1:0] cntin;
     // Control line
     reg clk;
     reg rst;

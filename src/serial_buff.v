@@ -22,7 +22,7 @@ module serial_buff(din, cntin, clk, rst, ena, dout);
     //reg [NDATA-1:0] dout;
 
     /* Module import declaration */
-    shift_reg shiftRegInst (
+    shift_reg #(NDATA) shiftRegInst (
         .din (din),
         .clk (clk),
         .rst (rst),
@@ -38,7 +38,7 @@ module serial_buff(din, cntin, clk, rst, ena, dout);
                 if (cntin == 'd0)
                     dout <= buffer;
                 else if (!MOVIN && cntin[1:0] == 'd0) begin
-                    dout[NDATA-1:4] <= dout[NDATA-5:0]
+                    dout[NDATA-1:4] <= dout[NDATA-5:0];
                     dout[3:0] <= dout[NDATA-1:NDATA-4];
                 end
                 else
