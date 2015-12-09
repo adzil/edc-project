@@ -22,8 +22,11 @@ module input_buff(  din, cntin, clk, rst, ena,
     output [NDATA-1:0] doutSigB;
     output [NDATA-1:0] doutSigC;
 
+    // Data input buffer to improve stability with different clock
+    reg [3:0] dinBuff [0:1] = {4'd0, 4'd0};
+
     serial_buff #(1'd1, NDATA) serialBuffInstA (
-        .din (din[0]),
+        .din (dinBuff[1][0]),
         .cntin (cntin),
         .clk (clk),
         .rst (rst),
@@ -32,7 +35,7 @@ module input_buff(  din, cntin, clk, rst, ena,
     );
 
     serial_buff #(1'd0, NDATA) serialBuffInstB (
-        .din (din[1]),
+        .din (dinBuff[1][1]),
         .cntin (cntin),
         .clk (clk),
         .rst (rst),
@@ -41,7 +44,7 @@ module input_buff(  din, cntin, clk, rst, ena,
     );
 
     serial_buff #(1'd0, NDATA) serialBuffInstC (
-        .din (din[2]),
+        .din (dinBuff[1][2]),
         .cntin (cntin),
         .clk (clk),
         .rst (rst),
@@ -50,12 +53,22 @@ module input_buff(  din, cntin, clk, rst, ena,
     );
 
     serial_buff #(1'd0, NDATA) serialBuffInstD (
-        .din (din[3]),
+        .din (dinBuff[1][3]),
         .cntin (cntin),
         .clk (clk),
         .rst (rst),
         .ena (ena),
         .dout (doutSigC)
     );
+
+    always @ (posedge clk or negedge rst) begin
+        if (!rst)
+            dinBuff <= {4'd0, 4'd0};
+        else
+            if (!ena) begin
+                dinBuff[1] <= dinBuff[0];
+                dinBuff[0] <= din;
+            end
+    end
 
 endmodule
