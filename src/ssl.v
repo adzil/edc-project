@@ -9,7 +9,7 @@
 
 `timescale 1ns/100ps
 
-module ssl(clk, erst, din, dIdA, dIdB, dIdC);
+module ssl(clk, erst, din, dIdA, dIdB, dIdC, dSsA);//, dSsB, dSsC);
     /* Parameter declaration */
     parameter RSTSIZE = 4;
     parameter ENASIZE = 2;
@@ -21,6 +21,13 @@ module ssl(clk, erst, din, dIdA, dIdB, dIdC);
     input erst;
     input [3:0] din;
 
+    output [NDATA_LOG-1:0] dIdA;
+    output [NDATA_LOG-1:0] dIdB;
+    output [NDATA_LOG-1:0] dIdC;
+    output [20:0] dSsA;
+    //output [20:0] dSsB;
+    //output [20:0] dSsC;
+
     /* Global control wire declaration */
     wire rst;
     wire ena;
@@ -31,11 +38,6 @@ module ssl(clk, erst, din, dIdA, dIdB, dIdC);
     wire [NDATA-1:0] dinSigA;
     wire [NDATA-1:0] dinSigB;
     wire [NDATA-1:0] dinSigC;
-
-
-    output [NDATA_LOG-1:0] dIdA;
-    output [NDATA_LOG-1:0] dIdB;
-    output [NDATA_LOG-1:0] dIdC;
 
     /* Module declaration */
     // Master reset synchronizer module
@@ -68,7 +70,7 @@ module ssl(clk, erst, din, dIdA, dIdB, dIdC);
     );
 
     // Processor array module
-    proc_array procArrayA (
+    proc_array #(NDATA) procArrayA (
         .dinRef (dinRef),
         .dinSig (dinSigA),
         .clk (clk),
@@ -78,7 +80,7 @@ module ssl(clk, erst, din, dIdA, dIdB, dIdC);
         .dout (dIdA)
     );
 
-    proc_array procArrayB (
+    proc_array #(NDATA) procArrayB (
         .dinRef (dinRef),
         .dinSig (dinSigB),
         .clk (clk),
@@ -88,7 +90,7 @@ module ssl(clk, erst, din, dIdA, dIdB, dIdC);
         .dout (dIdB)
     );
 
-    proc_array procArrayC (
+    proc_array #(NDATA) procArrayC (
         .dinRef (dinRef),
         .dinSig (dinSigC),
         .clk (clk),
@@ -97,5 +99,16 @@ module ssl(clk, erst, din, dIdA, dIdB, dIdC);
         .cntin (cntin),
         .dout (dIdC)
     );
+
+    output_proc #(NDATA) outputProcA (
+        .din (dIdA),
+        .clk (clk),
+        .rst (rst),
+        .ena (ena),
+        .cntin (cntin),
+        .dout (dSsA)
+    );
+
+
 
 endmodule
