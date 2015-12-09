@@ -9,15 +9,16 @@
 
 `timescale 1ns/100ps
 
-module ssl(clk, erst, din, dIdA, dIdB, dIdC, dSsA);//, dSsB, dSsC);
+module ssl(eclk, erst, din, dIdA, dIdB, dIdC, dSsA);//, dSsB, dSsC);
     /* Parameter declaration */
     parameter RSTSIZE = 4;
     parameter ENASIZE = 2;
+    parameter DIV = 50;
     parameter NDATA = 128;
     parameter NDATA_LOG = $clog2(NDATA);
 
     /* Input/output declaration */
-    input clk;
+    input eclk;
     input erst;
     input [3:0] din;
 
@@ -29,6 +30,9 @@ module ssl(clk, erst, din, dIdA, dIdB, dIdC, dSsA);//, dSsB, dSsC);
     //output [20:0] dSsC;
 
     /* Global control wire declaration */
+    wire frst;
+    wire fena;
+    wire clk;
     wire rst;
     wire ena;
 
@@ -41,9 +45,25 @@ module ssl(clk, erst, din, dIdA, dIdB, dIdC, dSsA);//, dSsB, dSsC);
 
     /* Module declaration */
     // Master reset synchronizer module
-    rst_synch #(RSTSIZE, ENASIZE) rstSynchInst (
-        .clk (clk),
+    rst_synch #(RSTSIZE, ENASIZE) rstSynchInstA (
+        .clk (eclk),
         .erst (erst),
+        .rst (frst),
+        .ena (fena)
+    );
+
+    // Clock division module
+    clkdiv #(DIV) clkdivInst (
+        .clk (eclk),
+        .rst(frst),
+        .ena(fena),
+        .clkout (clk)
+    );
+
+    // Slow clock synchronizer module
+    rst_synch #(RSTSIZE, ENASIZE) rstSynchInstB (
+        .clk (clk),
+        .erst (frst),
         .rst (rst),
         .ena (ena)
     );
